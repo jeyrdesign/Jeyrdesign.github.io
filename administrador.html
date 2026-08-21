@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07080a">
+<title>JEYR DESIGN — Administrador</title>
+<style>
+:root{
+  --bg:#07080a;--soft:#0d0f13;--card:#111419;--card2:#15181e;
+  --line:rgba(255,255,255,.09);--text:#f5f7fa;--muted:#8f97a3;
+  --blue:#0066ff;--blue2:#3385ff;--danger:#ff4d5f;--ok:#21c78b;
+  --r:20px;--max:1380px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:
+radial-gradient(circle at 85% 0,rgba(0,102,255,.13),transparent 28%),var(--bg);
+color:var(--text);min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.wrap{width:min(calc(100% - 36px),var(--max));margin:auto}
+.top{height:78px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;
+background:rgba(7,8,10,.88);backdrop-filter:blur(18px)}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand img{width:40px;height:40px;object-fit:contain}
+.brand b{display:block;font-size:13px;letter-spacing:.14em}
+.brand small{display:block;font-size:8px;color:var(--muted);letter-spacing:.18em}
+.nav-actions{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:#101318;color:#fff;border-radius:999px;padding:10px 15px;
+font-size:11px;font-weight:800;transition:.2s}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.2)}
+.btn.primary{background:var(--blue);border-color:var(--blue)}
+.btn.danger{color:#ffb3bb;border-color:rgba(255,77,95,.28)}
+.layout{display:grid;grid-template-columns:270px 1fr;gap:22px;padding:22px 0 50px}
+.sidebar{position:sticky;top:100px;height:max-content;border:1px solid var(--line);border-radius:var(--r);
+background:rgba(13,15,19,.82);padding:15px}
+.side-title{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#68717d;padding:8px 10px 13px}
+.side-btn{width:100%;text-align:left;border:0;background:transparent;color:#aeb5bf;padding:12px 11px;
+border-radius:12px;font-size:11px;font-weight:800;margin-bottom:4px}
+.side-btn:hover,.side-btn.active{background:rgba(0,102,255,.12);color:#fff}
+.side-btn.active{box-shadow:inset 2px 0 var(--blue)}
+.side-note{border-top:1px solid var(--line);margin-top:15px;padding:15px 10px 5px;color:#737b87;font-size:10px;line-height:1.6}
+.main{min-width:0}
+.page{display:none}.page.active{display:block}
+.head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+.kicker{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue2);font-weight:900}
+h1{font-size:clamp(35px,5vw,58px);line-height:.95;letter-spacing:-.06em;margin-top:8px}
+h2{font-size:25px;letter-spacing:-.04em}
+.desc{max-width:500px;color:var(--muted);font-size:12px;line-height:1.6}
+.panel{border:1px solid var(--line);border-radius:var(--r);background:rgba(13,15,19,.78);padding:20px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.search{flex:1;min-width:200px}
+.input,.textarea,.select{width:100%;background:#0b0d10;border:1px solid var(--line);color:#fff;border-radius:12px;
+padding:12px 13px;outline:0;font-size:12px}
+.input:focus,.textarea:focus,.select:focus{border-color:rgba(0,102,255,.7);box-shadow:0 0 0 3px rgba(0,102,255,.08)}
+.textarea{min-height:110px;resize:vertical}
+label{display:block;font-size:9px;color:#929aa5;text-transform:uppercase;letter-spacing:.12em;font-weight:900;margin-bottom:7px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+.projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.project-card{border:1px solid var(--line);border-radius:17px;overflow:hidden;background:#0d0f13}
+.thumb{aspect-ratio:16/10;background:#16191f center/cover no-repeat;position:relative}
+.thumb .cat{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.12);
+border-radius:999px;padding:5px 8px;font-size:8px;font-weight:900}
+.card-body{padding:13px}
+.card-body h3{font-size:16px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:9px;color:#747c88;margin-top:4px}
+.card-actions{display:flex;gap:7px;margin-top:13px}
+.card-actions .btn{flex:1;padding:8px 9px;font-size:9px}
+.empty{padding:55px 20px;text-align:center;border:1px dashed var(--line);border-radius:16px;color:var(--muted);
+font-size:12px;grid-column:1/-1}
+.checkrow{display:flex;gap:10px;align-items:center;margin-top:10px}
+.checkrow input{accent-color:var(--blue)}
+.preview{margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:none}
+.preview img{display:block;width:100%;max-height:300px;object-fit:contain;background:#090a0c}
+.actions-row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{padding:17px;border:1px solid var(--line);border-radius:16px;background:#0d0f13}
+.stat strong{display:block;font-size:25px}.stat span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.help{color:#7d8590;font-size:11px;line-height:1.65}
+.codebox{margin-top:12px;background:#090a0c;border:1px solid var(--line);border-radius:14px;padding:14px;
+font:11px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#cbd2dc;white-space:pre-wrap;word-break:break-word}
+.toast{position:fixed;right:20px;bottom:20px;z-index:50;background:#14171d;border:1px solid var(--line);
+border-radius:13px;padding:13px 16px;box-shadow:0 20px 60px #0008;transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s;font-size:11px}
+.toast.show{transform:none;opacity:1}
+.login{position:fixed;inset:0;background:#07080a;display:grid;place-items:center;z-index:100;padding:20px}
+.login-box{width:min(430px,100%);border:1px solid var(--line);border-radius:25px;background:#0d0f13;padding:30px;
+box-shadow:0 30px 100px #0008}
+.login-logo{display:block;width:110px;height:110px;object-fit:contain;margin:0 auto 18px}
+.login-box h1{text-align:center;font-size:30px}
+.login-box p{text-align:center;color:var(--muted);font-size:11px;margin:10px 0 25px}
+.error{color:#ff9ca7;font-size:10px;min-height:17px;margin-top:8px}
+@media(max-width:1050px){.projects{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:220px 1fr}}
+@media(max-width:760px){
+ .wrap{width:min(calc(100% - 24px),var(--max))}
+ .layout{grid-template-columns:1fr}
+ .sidebar{position:static;display:flex;overflow:auto;gap:5px;padding:8px}
+ .side-title,.side-note{display:none}.side-btn{width:auto;white-space:nowrap;margin:0}
+ .form-grid{grid-template-columns:1fr}.full{grid-column:auto}.stats{grid-template-columns:1fr 1fr}
+ .projects{grid-template-columns:1fr}.head{display:block}.head .desc{margin-top:12px}
+ .nav-actions .btn:not(.primary){display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <div class="login-box">
+    <img class="login-logo" src="assets/logo/jeyr-isotipo.png" alt="JEYR DESIGN">
+    <h1>Administrador</h1>
+    <p>Gestiona el contenido del portafolio de JEYR DESIGN.</p>
+    <label for="pin">Clave local</label>
+    <input class="input" id="pin" type="password" placeholder="Ingresa la clave">
+    <div class="error" id="loginError"></div>
+    <button class="btn primary" style="width:100%;margin-top:5px" id="loginBtn">Entrar</button>
+    <a class="btn" style="display:flex;margin-top:9px;justify-content:center" href="index.html">Volver al portafolio</a>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <img src="assets/logo/jeyr-isotipo.png" alt="JEYR DESIGN">
+      <div><b>JEYR DESIGN</b><small>CREATIVE STUDIO · ADMIN</small></div>
+    </a>
+    <div class="nav-actions">
+      <a class="btn" href="index.html" target="_blank">Ver portafolio ↗</a>
+      <button class="btn" id="logout">Salir</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <aside class="sidebar">
+    <div class="side-title">Panel</div>
+    <button class="side-btn active" data-page="dashboard">Resumen</button>
+    <button class="side-btn" data-page="proyectos">Proyectos</button>
+    <button class="side-btn" data-page="nuevo">Nuevo proyecto</button>
+    <button class="side-btn" data-page="datos">Datos / JSON</button>
+    <div class="side-note">
+      Esta versión está pensada para GitHub Pages. No usa Google Sheets ni Apps Script.
+      Los cambios se guardan en este navegador y pueden exportarse como <b>proyectos.json</b>.
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <section class="page active" id="page-dashboard">
+      <div class="head">
+        <div><div class="kicker">JEYR DESIGN / 00</div><h1>Resumen.</h1></div>
+        <p class="desc">Control rápido del contenido que aparece en tu portafolio.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong id="stTotal">0</strong><span>Proyectos</span></div>
+        <div class="stat"><strong id="stFoto">0</strong><span>Fotografía</span></div>
+        <div class="stat"><strong id="stVideo">0</strong><span>Video</span></div>
+        <div class="stat"><strong id="stDiseno">0</strong><span>Diseño</span></div>
+      </div>
+      <div class="panel">
+        <h2>Flujo recomendado</h2>
+        <p class="help" style="margin-top:12px">
+          1. Crea o edita tus proyectos aquí.<br>
+          2. Descarga <b>proyectos.json</b> desde la sección Datos / JSON.<br>
+          3. Sube ese archivo a <b>data/proyectos.json</b> dentro de tu repositorio de GitHub.<br>
+          4. GitHub Pages actualizará el portafolio.
+        </p>
+      </div>
+    </section>
+
+    <section class="page" id="page-proyectos">
+      <div class="head">
+        <div><div class="kicker">JEYR DESIGN / 01</div><h1>Proyectos.</h1></div>
+        <p class="desc">Busca, edita, duplica o elimina trabajos del portafolio.</p>
+      </div>
+      <div class="panel">
+        <div class="toolbar">
+          <input class="input search" id="search" placeholder="Buscar por título, cliente o categoría...">
+          <select class="select" id="filterCat" style="max-width:170px">
+            <option value="Todos">Todas las categorías</option>
+            <option>Fotografía</option><option>Video</option><option>Diseño</option>
+          </select>
+          <button class="btn primary" id="newBtn">+ Nuevo</button>
+        </div>
+        <div class="projects" id="projectList"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-nuevo">
+      <div class="head">
+        <div><div class="kicker">JEYR DESIGN / 02</div><h1 id="formTitle">Nuevo proyecto.</h1></div>
+        <p class="desc">Completa la información y guarda el proyecto en el administrador.</p>
+      </div>
+      <div class="panel">
+        <form id="projectForm">
+          <input type="hidden" id="editId">
+          <div class="form-grid">
+            <div>
+              <label for="title">Título *</label>
+              <input class="input" id="title" required placeholder="Ej. Sesión Editorial">
+            </div>
+            <div>
+              <label for="category">Categoría *</label>
+              <select class="select" id="category" required>
+                <option value="">Seleccionar...</option>
+                <option>Fotografía</option><option>Video</option><option>Diseño</option>
+              </select>
+            </div>
+            <div>
+              <label for="client">Cliente</label>
+              <input class="input" id="client" placeholder="Nombre del cliente">
+            </div>
+            <div>
+              <label for="year">Año</label>
+              <input class="input" id="year" type="number" min="2000" max="2100" placeholder="2026">
+            </div>
+            <div class="full">
+              <label for="image">Imagen / portada</label>
+              <input class="input" id="image" placeholder="Ej. assets/proyectos/proyecto-01.jpg">
+              <div class="help" style="margin-top:7px">Usa una ruta relativa dentro del repositorio. También puedes usar una URL https.</div>
+              <div class="preview" id="preview"><img id="previewImg" alt="Vista previa"></div>
+            </div>
+            <div class="full">
+              <label for="description">Descripción</label>
+              <textarea class="textarea" id="description" placeholder="Describe brevemente el proyecto..."></textarea>
+            </div>
+            <div>
+              <label for="link">Enlace externo</label>
+              <input class="input" id="link" placeholder="https://...">
+            </div>
+            <div>
+              <label for="order">Orden</label>
+              <input class="input" id="order" type="number" min="0" value="0">
+            </div>
+            <div class="full checkrow">
+              <input type="checkbox" id="featured">
+              <label for="featured" style="margin:0;text-transform:none;letter-spacing:0;font-size:11px;color:#d8dde5">Mostrar como proyecto destacado</label>
+            </div>
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn" id="cancelForm">Cancelar</button>
+            <button type="submit" class="btn primary">Guardar proyecto</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="page" id="page-datos">
+      <div class="head">
+        <div><div class="kicker">JEYR DESIGN / 03</div><h1>Datos / JSON.</h1></div>
+        <p class="desc">Importa, exporta y prepara el archivo que utiliza tu portafolio en GitHub.</p>
+      </div>
+      <div class="panel">
+        <h2>Exportar</h2>
+        <p class="help" style="margin:10px 0 14px">Descarga el archivo listo para colocar en <b>data/proyectos.json</b>.</p>
+        <button class="btn primary" id="downloadBtn">Descargar proyectos.json</button>
+        <button class="btn" id="copyBtn">Copiar JSON</button>
+        <div class="codebox" id="jsonPreview"></div>
+
+        <h2 style="margin-top:28px">Importar</h2>
+        <p class="help" style="margin:10px 0 14px">Selecciona un proyectos.json que hayas descargado anteriormente.</p>
+        <input class="input" id="fileImport" type="file" accept=".json,application/json">
+        <div class="actions-row">
+          <button class="btn danger" id="resetBtn">Restaurar demo</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE='JEYR_DESIGN_PROJECTS_V1';
+const LOGIN='JEYR_ADMIN_SESSION_V1';
+const DEMO=[
+ {id:'demo1',titulo:'Tu próximo proyecto',cliente:'JEYR DESIGN',categoria:'Fotografía',anio:'2026',descripcion:'Reemplaza este contenido con uno de tus proyectos.',imagen:'',link:'',orden:1,featured:true},
+ {id:'demo2',titulo:'Producción audiovisual',cliente:'JEYR DESIGN',categoria:'Video',anio:'2026',descripcion:'Agrega aquí una producción audiovisual.',imagen:'',link:'',orden:2,featured:false},
+ {id:'demo3',titulo:'Identidad visual',cliente:'JEYR DESIGN',categoria:'Diseño',anio:'2026',descripcion:'Agrega aquí un proyecto de diseño.',imagen:'',link:'',orden:3,featured:false}
+];
+let projects=[];
+
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;")}
+function uid(){return 'p_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
+function save(){localStorage.setItem(STORAGE,JSON.stringify(projects));renderAll()}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2400)}
+function loadLocal(){
+  try{
+    const x=JSON.parse(localStorage.getItem(STORAGE));
+    projects=Array.isArray(x)?x:DEMO.map(x=>({...x}));
+  }catch(e){projects=DEMO.map(x=>({...x}))}
+  renderAll();
+}
+function go(page){
+  document.querySelectorAll('.side-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  $('page-'+page).classList.add('active');
+  if(page==='datos')updateJsonPreview();
+}
+document.querySelectorAll('.side-btn').forEach(b=>b.onclick=()=>go(b.dataset.page));
+$('newBtn').onclick=()=>newProject();
+function newProject(){
+  $('editId').value='';$('formTitle').textContent='Nuevo proyecto.';
+  $('projectForm').reset();$('year').value=new Date().getFullYear();$('order').value=projects.length+1;
+  $('preview').style.display='none';go('nuevo');window.scrollTo({top:0,behavior:'smooth'});
+}
+$('cancelForm').onclick=()=>go('proyectos');
+
+$('projectForm').onsubmit=e=>{
+  e.preventDefault();
+  const data={
+    id:$('editId').value||uid(),
+    titulo:$('title').value.trim(),
+    cliente:$('client').value.trim(),
+    categoria:$('category').value,
+    anio:$('year').value.trim(),
+    descripcion:$('description').value.trim(),
+    imagen:$('image').value.trim(),
+    link:$('link').value.trim(),
+    orden:Number($('order').value)||0,
+    featured:$('featured').checked
+  };
+  if(!data.titulo||!data.categoria){toast('Completa título y categoría.');return}
+  const idx=projects.findIndex(p=>String(p.id)===String(data.id));
+  if(idx>=0)projects[idx]=data;else projects.push(data);
+  projects.sort((a,b)=>(Number(a.orden)||0)-(Number(b.orden)||0));
+  save();toast(idx>=0?'Proyecto actualizado.':'Proyecto creado.');go('proyectos');
+};
+
+function editProject(id){
+  const p=projects.find(x=>String(x.id)===String(id));if(!p)return;
+  $('editId').value=p.id;$('formTitle').textContent='Editar proyecto.';
+  $('title').value=p.titulo||'';$('client').value=p.cliente||'';$('category').value=p.categoria||'';
+  $('year').value=p.anio||'';$('description').value=p.descripcion||'';$('image').value=p.imagen||'';
+  $('link').value=p.link||'';$('order').value=p.orden||0;$('featured').checked=!!p.featured;
+  updatePreview();go('nuevo');window.scrollTo({top:0,behavior:'smooth'});
+}
+function duplicateProject(id){
+  const p=projects.find(x=>String(x.id)===String(id));if(!p)return;
+  projects.push({...p,id:uid(),titulo:(p.titulo||'Proyecto')+' — copia',orden:projects.length+1,featured:false});
+  save();toast('Proyecto duplicado.');
+}
+function deleteProject(id){
+  const p=projects.find(x=>String(x.id)===String(id));if(!p)return;
+  if(!confirm('¿Eliminar "'+(p.titulo||'proyecto')+'"?'))return;
+  projects=projects.filter(x=>String(x.id)!==String(id));save();toast('Proyecto eliminado.');
+}
+function renderProjects(){
+  const q=$('search').value.toLowerCase().trim(),cat=$('filterCat').value;
+  const arr=projects.filter(p=>{
+    const text=[p.titulo,p.cliente,p.categoria,p.anio].join(' ').toLowerCase();
+    return (!q||text.includes(q))&&(cat==='Todos'||p.categoria===cat);
+  });
+  $('projectList').innerHTML=arr.length?arr.map(p=>`
+    <article class="project-card">
+      <div class="thumb" ${p.imagen?`style="background-image:url('${esc(p.imagen)}')"`:''}>
+        <span class="cat">${esc(p.categoria||'Proyecto')}</span>
+      </div>
+      <div class="card-body">
+        <h3 title="${esc(p.titulo)}">${esc(p.titulo||'Sin título')}</h3>
+        <div class="meta">${esc(p.cliente||'JEYR DESIGN')} · ${esc(p.anio||'')} ${p.featured?'· DESTACADO':''}</div>
+        <div class="card-actions">
+          <button class="btn" onclick="editProject('${esc(p.id)}')">Editar</button>
+          <button class="btn" onclick="duplicateProject('${esc(p.id)}')">Duplicar</button>
+          <button class="btn danger" onclick="deleteProject('${esc(p.id)}')">Eliminar</button>
+        </div>
+      </div>
+    </article>`).join(''):`<div class="empty">No hay proyectos que coincidan con tu búsqueda.</div>`;
+}
+function renderStats(){
+  $('stTotal').textContent=projects.length;
+  $('stFoto').textContent=projects.filter(p=>p.categoria==='Fotografía').length;
+  $('stVideo').textContent=projects.filter(p=>p.categoria==='Video').length;
+  $('stDiseno').textContent=projects.filter(p=>p.categoria==='Diseño').length;
+}
+function normalizeForExport(){
+  return [...projects].sort((a,b)=>(Number(a.orden)||0)-(Number(b.orden)||0)).map(p=>({
+    id:p.id,titulo:p.titulo,cliente:p.cliente||'',categoria:p.categoria,anio:p.anio||'',
+    descripcion:p.descripcion||'',imagen:p.imagen||'',link:p.link||'',
+    orden:Number(p.orden)||0,featured:!!p.featured
+  }));
+}
+function updateJsonPreview(){
+  $('jsonPreview').textContent=JSON.stringify(normalizeForExport(),null,2);
+}
+function renderAll(){renderProjects();renderStats();updateJsonPreview()}
+
+$('search').oninput=renderProjects;$('filterCat').onchange=renderProjects;
+$('image').oninput=updatePreview;
+function updatePreview(){
+  const src=$('image').value.trim();
+  if(!src){$('preview').style.display='none';return}
+  $('previewImg').src=src;$('preview').style.display='block';
+  $('previewImg').onerror=()=>{$('preview').style.display='none'}
+}
+$('downloadBtn').onclick=()=>{
+  const blob=new Blob([JSON.stringify(normalizeForExport(),null,2)],{type:'application/json;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='proyectos.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);toast('proyectos.json descargado.');
+};
+$('copyBtn').onclick=async()=>{
+  try{await navigator.clipboard.writeText(JSON.stringify(normalizeForExport(),null,2));toast('JSON copiado.')}
+  catch(e){toast('No se pudo copiar automáticamente.')}
+};
+$('fileImport').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const d=JSON.parse(reader.result);
+      if(!Array.isArray(d))throw new Error();
+      projects=d.map((p,i)=>({...p,id:p.id||uid(),orden:Number(p.orden)||i+1}));
+      save();toast('Proyectos importados correctamente.');go('proyectos');
+    }catch(err){toast('El archivo JSON no tiene un formato válido.')}
+  };
+  reader.readAsText(f);
+};
+$('resetBtn').onclick=()=>{
+  if(!confirm('Esto reemplazará los proyectos guardados en este navegador por la demo. ¿Continuar?'))return;
+  projects=DEMO.map(x=>({...x}));save();toast('Demo restaurada.');
+};
+
+$('logout').onclick=()=>{sessionStorage.removeItem(LOGIN);location.reload()};
+$('loginBtn').onclick=login;
+$('pin').onkeydown=e=>{if(e.key==='Enter')login()};
+function login(){
+  if($('pin').value==='JEYR2026'){
+    sessionStorage.setItem(LOGIN,'1');$('login').style.display='none';$('pin').value='';loadLocal();
+  }else $('loginError').textContent='Clave incorrecta.';
+}
+if(sessionStorage.getItem(LOGIN)==='1'){$('login').style.display='none';loadLocal()}else $('login').style.display='grid';
+</script>
+</body>
+</html>
